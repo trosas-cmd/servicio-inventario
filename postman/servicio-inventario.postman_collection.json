@@ -1,0 +1,58 @@
+{
+  "info": {
+    "name": "servicio-inventario",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "productId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Listar productos",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/products" }
+    },
+    {
+      "name": "Crear producto",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('201 Created', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('productId', pm.response.json().id);"
+        ]}
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Audífonos Bluetooth\",\n  \"cantidad\": 40,\n  \"precio\": 799.90\n}" },
+        "url": "{{baseUrl}}/api/products"
+      }
+    },
+    {
+      "name": "Obtener producto por id",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/products/{{productId}}" }
+    },
+    {
+      "name": "Actualizar producto",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Audífonos Bluetooth Pro\",\n  \"cantidad\": 35,\n  \"precio\": 999.00\n}" },
+        "url": "{{baseUrl}}/api/products/{{productId}}"
+      }
+    },
+    {
+      "name": "Crear producto inválido (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"\",\n  \"cantidad\": -1,\n  \"precio\": 10\n}" },
+        "url": "{{baseUrl}}/api/products"
+      }
+    },
+    {
+      "name": "Eliminar producto",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/products/{{productId}}" }
+    }
+  ]
+}
